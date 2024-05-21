@@ -1,0 +1,155 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct Node
+{
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+typedef struct Node node;
+
+node *head = NULL;
+node *tail = NULL;
+
+node *createNode()
+{
+    node *add = NULL;
+    add = (node *)malloc(sizeof(node));
+    return (add);
+}
+
+void insert(int data)
+{
+    node *add = createNode();
+
+    if(add == NULL)
+    {
+        printf("Kosong\n");
+    }
+    else
+    {
+        add->data = data;
+        add->prev = NULL;
+        add->next = NULL;
+
+        if(head == NULL)
+        {
+            head = add;
+            tail = add;
+            head->next = head;
+            head->prev = head;
+        }
+        else
+        {
+            add->prev = tail;
+            add->next = head;
+            tail->next = add;
+            head->prev = add;
+            tail = add;
+        }
+    }
+}
+
+void view()
+{
+    node *val = head;
+    int i = 1;
+
+    if(val == NULL)
+    {
+        printf("Kosong\n");
+    }
+    else
+    {
+        printf("\n");
+        while(val != tail)
+        {
+            printf("%d ", val->data);
+            i++;
+            val = val->next;
+        }
+        printf("%d ", val->data);
+    }
+    printf("\n");
+}
+
+void sort(node *val, node *afVal)
+{
+    node *temp = NULL;
+
+    if (val->data > afVal->data)
+    {
+        if (val == head)
+        {
+            head = afVal;
+        }
+        if (afVal == tail)
+        {
+            tail = val;
+        }
+
+        if (val->prev != NULL)
+        {
+            val->prev->next = afVal;
+        }
+        if (afVal->next != NULL)
+        {
+            afVal->next->prev = val;
+        }
+
+        temp = afVal->next;
+        afVal->next = val;
+        afVal->prev = val->prev;
+        val->next = temp;
+        val->prev = afVal;
+    }
+}
+
+void address()
+{
+    node *val = head;
+    int i = 1;
+
+    if (val == NULL)
+    {
+        printf("Kosong\n");
+    }
+    else
+    {
+        printf("\n");
+        while (val != tail)
+        {
+            printf("Address: %p | Data: %d\n ", val, val->data);
+            i++;
+            val = val->next;
+        }
+        printf("Address: %p | Data: %d\n ", val, val->data);
+    }
+    printf("\n");
+}
+
+int main()
+{
+    node *add = NULL;
+    int jumlah, data;
+
+    printf("Jumlah data: ");
+    scanf("%d", &jumlah);
+    for(int i = 0; i < jumlah; i++)
+    {
+        printf("Masukkan data ke-%d: ", i + 1);
+        scanf("%d", &data);
+        insert(data);
+    }
+
+    printf("Data sebelum diurutkan:\n");
+    address();
+    printf("Data setelah diurutkan:\n");
+    sort(head, head->next);
+    address();
+
+    return 0;
+}
